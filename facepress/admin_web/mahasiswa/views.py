@@ -86,9 +86,10 @@ class MataKuliahMahasiswaViewSet(viewsets.ModelViewSet):
                 mahasiswa = Mahasiswa.objects.filter(id=mahasiswa_id).first()
                 if not mahasiswa:
                     return Response({'error': 'Mahasiswa not found'}, status=status.HTTP_404_NOT_FOUND)
+                print(kelas_id)
+                print(mata_kuliah_id)
 
                 kelas = Kelas.objects.filter(id=kelas_id, mata_kuliah_id=mata_kuliah_id).first()
-                return kelas
                 if not kelas:
                     return Response({'error': 'Kelas does not belong to the given MataKuliah'}, status=status.HTTP_400_BAD_REQUEST)
 
