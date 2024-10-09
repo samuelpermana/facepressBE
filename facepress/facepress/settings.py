@@ -43,9 +43,10 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'rest_framework',
     'rest_framework_simplejwt',
-    "admin_web",
     "corsheaders",
     'django_extensions',
+    "admin_web",
+    "dosen_web",
 ]
 
 MIDDLEWARE = [

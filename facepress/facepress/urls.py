@@ -24,6 +24,8 @@ from .views import AdminOnlyView, DosenOnlyView, MahasiswaOnlyView
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/web-admin/",include('admin_web.urls')),
+    path("api/web-dosen/",include('dosen_web.urls')),
+
     path('api/login/', LoginView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('admin-only/', AdminOnlyView.as_view(), name='admin_only'),
