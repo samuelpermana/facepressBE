@@ -25,6 +25,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/web-admin/",include('admin_web.urls')),
     path("api/web-dosen/",include('dosen_web.urls')),
+    path("api/web-mahasiswa/",include('mahasiswa_web.urls')),
 
     path('api/login/', LoginView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
