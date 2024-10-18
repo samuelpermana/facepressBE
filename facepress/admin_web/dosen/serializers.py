@@ -5,7 +5,7 @@ from ..models import Dosen
 class DosenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dosen
-        fields = ['email', 'nip', 'nama', 'mobile_phone', 'password']
+        fields = ['id','email', 'nip', 'nama', 'mobile_phone', 'password']
         extra_kwargs = {
             'password': {'write_only': True}  
         }
