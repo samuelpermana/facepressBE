@@ -87,7 +87,7 @@ WSGI_APPLICATION = "facepress.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'facepress_be',
+        'NAME': 'facepress',
         'USER': 'root',
         'PASSWORD': 'mySql111.',
         'HOST': 'localhost', 
