@@ -5,6 +5,7 @@ from .mata_kuliah.views import MataKuliahViewSet
 from .kelas.views import KelasViewSet
 from .jadwal.views import JadwalKelasViewSet
 from .presensi.views import detail_jadwal_dan_mahasiswa, set_presensi_status
+from .views import WebcamTestView
 
 router = DefaultRouter()
 
@@ -17,6 +18,9 @@ urlpatterns = [
     path('jadwal-terdekat/', JadwalTerdekatView.as_view(), name='jadwal-terdekat'),
     path('presensi/<int:jadwal_id>/', detail_jadwal_dan_mahasiswa, name='detail_jadwal_dan_mahasiswa'),
     path('presensi/<int:presensi_id>/set-status/', set_presensi_status, name='set_presensi_status'),
+
+    path('test-webcam/', WebcamTestView.as_view(), name='test_webcam'),
+
 
 
 

@@ -179,3 +179,22 @@ class PresensiMahasiswa(models.Model):
 
     def __str__(self):
         return f"{self.mahasiswa.nama} - {self.tanggal_presensi}"
+
+
+class FaceDataset(models.Model):
+    mahasiswa = models.ForeignKey('Mahasiswa', on_delete=models.CASCADE, related_name='face_datasets')
+    image_1 = models.ImageField(upload_to='face_datasets/')
+    image_2 = models.ImageField(upload_to='face_datasets/')
+    image_3 = models.ImageField(upload_to='face_datasets/')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Dataset Wajah - {self.mahasiswa.nama}"
+    
+class WajahMahasiswa(models.Model):
+    mahasiswa = models.ForeignKey(Mahasiswa, on_delete=models.CASCADE, related_name='wajah')
+    image = models.ImageField(upload_to='wajah_mahasiswa/')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Wajah {self.mahasiswa.nama} - {self.created_at}"

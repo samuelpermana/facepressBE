@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import pymysql
 from datetime import timedelta
+import os
 
 pymysql.install_as_MySQLdb()
 
@@ -33,6 +34,10 @@ ALLOWED_HOSTS = []  # Update this for production
 
 
 # Application definition
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -65,7 +70,10 @@ ROOT_URLCONF = "facepress.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        'DIRS': [
+            # Pastikan jika Anda ingin menggunakan templates di level proyek, tetapi ini opsional
+            os.path.join(BASE_DIR, 'templates'),  
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
