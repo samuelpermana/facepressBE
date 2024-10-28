@@ -12,8 +12,10 @@ import cv2
 from .serializers import WajahMahasiswaSerializer
 import os
 from django.conf import settings
+from facepress.auth.permissions import IsMahasiswa 
 
 class FaceDatasetView(APIView):
+    permission_classes = [IsAuthenticated, IsMahasiswa]
 
     def post(self, request, *args, **kwargs):
         # Ambil mahasiswa yang sedang login berdasarkan request.user
@@ -71,7 +73,7 @@ class FaceDatasetView(APIView):
 
 
 class CaptureFaceDataset(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsMahasiswa]
 
     def post(self, request, *args, **kwargs):
         try:
@@ -105,11 +107,12 @@ class CaptureFaceDataset(APIView):
             if len(faces) > 0:
                 # Simpan gambar ke filesystem
                 image_filename = f"{mahasiswa.nim}_{count}.jpg"
+                image_filename_database = f"wajah_mahasiswa/{mahasiswa.nim}_{count}.jpg"
                 image_path = os.path.join(save_dir, image_filename)
                 cv2.imwrite(image_path, frame)
 
                 # Simpan nama file ke database
-                wajah_instance = WajahMahasiswa.objects.create(mahasiswa=mahasiswa, image=image_filename)
+                wajah_instance = WajahMahasiswa.objects.create(mahasiswa=mahasiswa, image=image_filename_database)
                 serializer = WajahMahasiswaSerializer(wajah_instance)
                 captured_images.append(serializer.data)
                 
