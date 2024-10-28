@@ -41,12 +41,12 @@ def recognize_face(face_tensor, embeddings, labels):
     return None
 
 @api_view(['POST'])
-def start_attendance(request):
-    jadwal_kelas_id = request.data.get('jadwal_kelas_id')
+def start_attendance(request, jadwal_kelas_id):
     try:
         jadwal_kelas = JadwalKelas.objects.get(id=jadwal_kelas_id)
     except JadwalKelas.DoesNotExist:
         return JsonResponse({'error': 'Jadwal kelas tidak ditemukan'}, status=404)
+
     face_data = get_face_data()
     embeddings = face_data['embeddings']
     labels = face_data['labels']
@@ -66,12 +66,10 @@ def start_attendance(request):
                     mahasiswa_id = recognize_face(face_tensor, embeddings, labels)
                     if mahasiswa_id:
                         try:
-                            
                             presensi = PresensiMahasiswa.objects.get(
                                 mahasiswa_id=mahasiswa_id,
                                 jadwal_kelas=jadwal_kelas
                             )
-                            
                             presensi.status = 'hadir'
                             presensi.tanggal_presensi = timezone.now()
                             presensi.presensi_oleh = 'AI'
@@ -80,21 +78,48 @@ def start_attendance(request):
                             pass
 
                         mahasiswa = Mahasiswa.objects.get(id=mahasiswa_id)
-                        student_name = mahasiswa.nama  # Assuming there is a 'name' field
+                        student_name = mahasiswa.nama 
+                        box = mtcnn.detect(img)[0][i].astype(int)  
+                        cv2.rectangle(frame, (box[0], box[1]), (box[2], box[3]), (255, 0, 0), 2) 
 
-                        # Get bounding box for the detected face
-                        box = mtcnn.detect(img)[0][i].astype(int)  # Convert box coordinates to integers
-                        cv2.rectangle(frame, (box[0], box[1]), (box[2], box[3]), (255, 0, 0), 2)  # Draw rectangle
-
-                        # Display the student's name
                         cv2.putText(frame, student_name, (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
 
-        # Display the frame with detections
         cv2.imshow('Attendance', frame)
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):  # Quit on 'q' key
+        if cv2.waitKey(1) & 0xFF == ord('q'): 
             break
 
     cap.release()
     cv2.destroyAllWindows()
     return JsonResponse({'message': 'Presensi selesai'})
+
+@api_view(['GET'])
+def list_attendance(request, jadwal_kelas_id):
+    presensi_data = PresensiMahasiswa.objects.filter(jadwal_kelas_id=jadwal_kelas_id).select_related('mahasiswa')
+
+    # Cek apakah ada data presensi
+    if not presensi_data.exists():
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Data presensi tidak ditemukan untuk jadwal kelas ini.',
+            'data': []
+        }, status=404)
+
+    # Buat list untuk menampung data hasil query
+    data = []
+    for presensi in presensi_data:
+        mahasiswa = presensi.mahasiswa  # Ambil data mahasiswa dari presensi
+
+        # Tambahkan data presensi ke dalam list
+        data.append({
+            'nama_mahasiswa': mahasiswa.nama,
+            'nim_mahasiswa': mahasiswa.nim,
+            'status_presensi': presensi.status,
+            'semester_mengambil': mahasiswa.semester,
+        })
+
+    return JsonResponse({
+        'status': 'success',
+        'message': 'Data presensi berhasil ditemukan.',
+        'data': data
+    }, status=200)

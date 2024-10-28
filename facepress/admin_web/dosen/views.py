@@ -36,7 +36,6 @@ class DosenViewSet(viewsets.ModelViewSet):
     
     def retrieve(self, request, *args, **kwargs):
         try:
-            # Ambil instance dosen berdasarkan pk
             dosen = self.get_object()
             serializer = self.get_serializer(dosen)
             return Response({
